@@ -85,6 +85,9 @@ static void *coalesce(void *bp) {
         bp = PREV_BLKP(bp);
     }
 
+    if ((prev_p > (char *)bp) && (prev_p < NEXT_BLKP(bp)))
+        prev_p = bp;
+
     return bp;
 }
 
@@ -199,7 +202,7 @@ void mm_free(void *bp) {
     size_t size = GET_SIZE(HDRP(bp));
     PUT(HDRP(bp), PACK(size, 0));
     PUT(FTRP(bp), PACK(size, 0));
-    prev_p = coalesce(bp);
+    coalesce(bp);
 }
 
 /*
